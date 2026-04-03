@@ -54,28 +54,8 @@ function getAuthTokenContext() {
 }
 
 function getApiBases() {
-  const bases = [];
-  const host = window.location.hostname;
-  const protocol = window.location.protocol;
-
-  // If app is served by backend, use same-origin first.
-  if (window.location.port === '3000' || window.location.port === '5000') {
-    bases.push('/api');
-  }
-
-  // If opened via LAN IP/hostname, try same host on backend ports.
-  if (host && host !== 'localhost' && host !== '127.0.0.1') {
-    bases.push(`${protocol}//${host}:5000/api`);
-    bases.push(`${protocol}//${host}:3000/api`);
-  }
-
-  // Fallbacks for local development where frontend runs on another port.
-  bases.push('http://localhost:5000/api');
-  bases.push('http://localhost:3000/api');
-
-  return [...new Set(bases)];
+  return ['https://studentconcern-backend.onrender.com/api'];
 }
-
 async function apiCall(endpoint, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
