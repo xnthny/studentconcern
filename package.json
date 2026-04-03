@@ -1,0 +1,22 @@
+{
+  "name": "concerntrack",
+  "version": "1.0.0",
+  "description": "ConcernTrack - Student Concern Management System. Full-stack application with Node.js backend and Supabase database.",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "backend:install": "cd backend && npm install",
+    "backend:start": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev"
+  },
+  "keywords": ["student", "concern", "management", "ticket", "supabase", "express"],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

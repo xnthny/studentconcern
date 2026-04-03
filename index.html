@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ConcernTrack – Student Concern Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cg:#1AA260;--cg-dark:#127a48;--cg-light:#22c773;
+  --cg-pale:#e8f8f0;--cg-pale2:#d0f0e2;
+  --gold:#f0b429;--gold-bg:rgba(240,180,41,0.12);
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --bg:#f0faf5;--bg2:#e6f6ee;--border:#d1ead9;
+  --n50:#f6f8f7;--n100:#e9eeeb;--n200:#cfd8d3;--n300:#a3b5ac;
+  --n400:#728c80;--n500:#526860;--n600:#3d4f47;--n700:#2a3830;--n800:#1a2520;
+  --sidebar-bg:#0f1f18;--sidebar-text:#a8c4b6;--topbar-bg:#0f1f18;
+  --radius:8px;--radius-lg:14px;--radius-xl:20px;
+  --shadow:0 1px 4px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.14);
+  --font:'Plus Jakarta Sans',sans-serif;--sidebar-w:230px;--topbar-h:54px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--n800);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* AUTH */
+.auth-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#071a0f 0%,#0d2e1a 35%,#1AA260 70%,#0f2318 100%);padding:20px;}
+.auth-card{width:460px;max-width:100%;background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);border:1px solid var(--border);padding:40px;}
+.auth-logo{width:50px;height:50px;background:var(--cg-pale);border:1.5px solid var(--cg-pale2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.auth-title{font-size:21px;font-weight:800;color:var(--n800);letter-spacing:-0.5px;text-align:center;}
+.auth-sub{font-size:12px;color:var(--n400);margin-top:3px;text-align:center;margin-bottom:4px;}
+.auth-divider{height:1px;background:var(--n100);margin:20px 0;}
+.fg{margin-bottom:15px;}
+.fl{font-size:10.5px;font-weight:700;color:var(--n500);margin-bottom:5px;display:block;letter-spacing:0.04em;text-transform:uppercase;}
+.fi{width:100%;padding:10px 13px;border:1.5px solid var(--n200);border-radius:var(--radius);background:#fff;color:var(--n800);font-size:13px;font-family:var(--font);transition:border-color 0.2s;}
+.fi:focus{outline:none;border-color:var(--cg);box-shadow:0 0 0 3px rgba(26,162,96,0.1);}
+.fi::placeholder{color:var(--n300);}
+select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a3b5ac' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.pw-wrap{position:relative;}
+.pw-wrap .fi{padding-right:40px;}
+.pw-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--n300);background:none;border:none;padding:2px;display:flex;align-items:center;}
+.btn-main{width:100%;padding:11px;background:var(--cg);color:#fff;border:none;border-radius:var(--radius);font-size:13.5px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:var(--font);box-shadow:0 4px 12px rgba(26,162,96,0.3);}
+.btn-main:hover{background:var(--cg-dark);}
+.btn-sec{width:100%;padding:11px;background:#fff;color:var(--cg-dark);border:1.5px solid var(--cg-pale2);border-radius:var(--radius);font-size:13.5px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:var(--font);margin-top:10px;}
+.btn-sec:hover{background:var(--cg-pale);border-color:var(--cg);}
+.auth-foot{text-align:center;margin-top:16px;font-size:12.5px;color:var(--n400);}
+.auth-foot a{color:var(--cg-dark);font-weight:700;cursor:pointer;}
+.auth-foot a:hover{text-decoration:underline;}
+.frm2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.err-box{display:none;background:var(--red-bg);border:1px solid #fecaca;border-radius:var(--radius);padding:9px 13px;font-size:12px;color:#991b1b;margin-bottom:13px;}
+.ok-box{display:none;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--cg-dark);margin-bottom:13px;}
+.field-hint{font-size:11px;color:var(--n300);margin-top:4px;}
+
+/* APP */
+#app-screen{display:none;min-height:100vh;}
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--topbar-bg);display:flex;align-items:center;padding:0 18px 0 0;z-index:200;border-bottom:1px solid rgba(26,162,96,0.15);}
+.tb-brand{width:var(--sidebar-w);display:flex;align-items:center;gap:9px;padding:0 18px;flex-shrink:0;}
+.tb-logo{width:32px;height:32px;background:rgba(26,162,96,0.18);border:1.5px solid rgba(26,162,96,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.tb-logo svg{width:17px;height:17px;color:var(--cg);}
+.tb-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:-0.3px;}
+.tb-right{display:flex;align-items:center;gap:10px;margin-left:auto;}
+.role-pill{font-size:10px;background:rgba(26,162,96,0.18);color:var(--cg-light);border:1px solid rgba(26,162,96,0.3);padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}
+.tb-username{font-size:13px;color:rgba(200,230,215,0.8);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid rgba(26,162,96,0.3);flex-shrink:0;}
+.btn-signout{padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(200,230,215,0.8);border-radius:var(--radius);font-family:var(--font);transition:all 0.18s;}
+.btn-signout:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--sidebar-bg);border-right:1px solid rgba(26,162,96,0.1);overflow-y:auto;z-index:100;padding:0 0 20px;}
+.sb-user{padding:16px 16px 14px;border-bottom:1px solid rgba(26,162,96,0.1);margin-bottom:6px;}
+.sb-user-name{font-size:13px;font-weight:700;color:#e8f5ed;}
+.sb-user-id{font-size:11px;color:rgba(120,170,145,0.7);margin-top:1px;}
+.nav-sec{font-size:9px;color:rgba(120,170,145,0.5);font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:14px 16px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;font-size:12.5px;color:var(--sidebar-text);border-left:2.5px solid transparent;transition:all 0.15s;font-weight:500;}
+.nav-item:hover{background:rgba(26,162,96,0.08);color:#c8e8d8;}
+.nav-item.active{background:rgba(26,162,96,0.14);color:#fff;border-left-color:var(--cg);font-weight:600;}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.8;}
+.nav-item.active svg{opacity:1;}
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:26px 28px;background:var(--bg);min-height:calc(100vh - var(--topbar-h));}
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;}
+.page-title{font-size:20px;font-weight:800;color:var(--n800);letter-spacing:-0.4px;}
+.page-sub{font-size:12.5px;color:var(--n400);margin-top:2px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.stat-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--cg);}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.stat-icon svg{width:17px;height:17px;}
+.stat-label{font-size:10px;color:var(--n400);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
+.stat-val{font-size:30px;font-weight:800;color:var(--n800);line-height:1.1;margin:3px 0;letter-spacing:-0.5px;}
+.stat-sub{font-size:11px;color:var(--n300);}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow);}
+.card-title{font-size:13px;font-weight:700;color:var(--n700);margin-bottom:16px;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+table.tbl{width:100%;border-collapse:collapse;}
+table.tbl th{font-size:10px;color:var(--n400);font-weight:700;text-align:left;padding:9px 12px;background:var(--n50);border-bottom:1px solid var(--n100);letter-spacing:0.06em;text-transform:uppercase;}
+table.tbl td{padding:11px 12px;border-bottom:1px solid var(--n100);font-size:12.5px;color:var(--n700);vertical-align:middle;}
+table.tbl tr:last-child td{border-bottom:none;}
+table.tbl tr:hover td{background:var(--cg-pale);}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.badge-pending{background:#fffbeb;color:#92600a;border:1px solid #fcd34d;}.badge-pending::before{background:#f59e0b;}
+.badge-progress{background:var(--blue-bg);color:#1d4ed8;border:1px solid #bfdbfe;}.badge-progress::before{background:var(--blue);}
+.badge-resolved{background:var(--cg-pale);color:var(--cg-dark);border:1px solid var(--cg-pale2);}.badge-resolved::before{background:var(--cg);}
+.badge-rejected{background:var(--red-bg);color:#991b1b;border:1px solid #fecaca;}.badge-rejected::before{background:var(--red);}
+.prio-high{color:#991b1b;background:var(--red-bg);border:1px solid #fecaca;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.prio-med{color:#92600a;background:#fffbeb;border:1px solid #fcd34d;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.prio-low{color:var(--cg-dark);background:var(--cg-pale);border:1px solid var(--cg-pale2);padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.btn{padding:8px 16px;border-radius:var(--radius);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--n200);background:#fff;color:var(--n700);font-family:var(--font);transition:all 0.16s;display:inline-flex;align-items:center;gap:5px;}
+.btn:hover{border-color:var(--cg);color:var(--cg-dark);background:var(--cg-pale);}
+.btn-primary{background:var(--cg);color:#fff;border-color:var(--cg);box-shadow:0 2px 8px rgba(26,162,96,0.3);}
+.btn-primary:hover{background:var(--cg-dark);}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red);}
+.btn-danger:hover{background:#b91c1c;}
+.btn-sm{padding:6px 12px;font-size:11.5px;}
+.btn-xs{padding:3px 9px;font-size:10.5px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+textarea.fi{resize:vertical;}
+.upload-zone{border:1.5px dashed var(--cg-pale2);border-radius:var(--radius-lg);padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cg-pale);}
+.upload-zone:hover{border-color:var(--cg);}
+.upload-zone-icon{width:42px;height:42px;background:var(--cg-pale2);border-radius:11px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.upload-zone-icon svg{width:20px;height:20px;color:var(--cg);}
+.upload-zone p{font-size:13px;color:var(--cg-dark);font-weight:600;}
+.upload-zone span{font-size:11px;color:var(--n400);}
+.alert-info{background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--cg-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.thread{display:flex;flex-direction:column;gap:16px;}
+.msg-row{display:flex;gap:10px;align-items:flex-start;}
+.msg-row.staff{flex-direction:row-reverse;}
+.msg-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.bubble{padding:12px 16px;border-radius:var(--radius-lg);font-size:12.5px;line-height:1.65;max-width:78%;}
+.bubble-student{background:#fff;border:1px solid var(--border);}
+.bubble-staff{background:var(--cg);color:#fff;}
+.stars{display:flex;gap:6px;}
+.star{font-size:28px;color:var(--n200);cursor:pointer;transition:color 0.12s;line-height:1;}
+.star.lit{color:var(--gold);}
+.prog-bar{height:7px;background:var(--n100);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--cg);border-radius:4px;transition:width 0.5s;}
+.ann-item{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--n100);}
+.ann-item:last-child{border-bottom:none;}
+.ann-dot{width:8px;height:8px;border-radius:50%;background:var(--cg);margin-top:5px;flex-shrink:0;}
+.ann-title{font-size:12.5px;font-weight:700;color:var(--n700);}
+.ann-body{font-size:11.5px;color:var(--n400);margin-top:2px;}
+.ann-date{font-size:10.5px;color:var(--n300);margin-top:4px;}
+.chip{display:inline-flex;align-items:center;padding:3px 11px;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:20px;font-size:11px;color:var(--cg-dark);margin:2px;font-weight:600;}
+.dept-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.02em;}
+.notif-item{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--n100);}
+.notif-item:last-child{border-bottom:none;}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.notif-dot.unread{background:var(--cg);}
+.notif-dot.read{background:var(--n200);}
+.notif-title{font-size:12.5px;font-weight:700;color:var(--n700);}
+.notif-body{font-size:11.5px;color:var(--n400);margin-top:2px;}
+.notif-time{font-size:10.5px;color:var(--n300);margin-top:4px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--n500);cursor:pointer;padding:6px 10px;border-radius:var(--radius);transition:all 0.15s;border:none;background:none;font-family:var(--font);margin-bottom:16px;font-weight:600;}
+.back-btn:hover{background:var(--cg-pale);color:var(--cg-dark);}
+.info-tbl{width:100%;font-size:12px;}
+.info-tbl tr td:first-child{color:var(--n400);padding:7px 0;width:42%;font-weight:500;}
+.info-tbl tr td:last-child{font-weight:600;color:var(--n700);}
+.info-tbl tr{border-bottom:1px solid var(--n100);}
+.info-tbl tr:last-child{border-bottom:none;}
+.success-icon{width:70px;height:70px;background:var(--cg-pale);border:2px solid var(--cg-pale2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.tkt-num-box{background:var(--sidebar-bg);border-radius:var(--radius-lg);padding:22px;text-align:center;margin-bottom:24px;}
+.two-col{display:grid;grid-template-columns:1fr 300px;gap:18px;}
+.two-col-wide{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.rep-row{display:flex;align-items:center;gap:12px;margin-bottom:13px;font-size:12px;}
+.rep-label{width:160px;color:var(--n500);flex-shrink:0;font-weight:500;}
+.rep-count{width:30px;text-align:right;color:var(--n700);font-weight:700;flex-shrink:0;}
+.attach-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--n50);border-radius:var(--radius);margin-bottom:6px;font-size:12px;color:var(--n600);border:1px solid var(--n100);}
+.attach-icon{width:28px;height:28px;background:var(--cg-pale);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.attach-icon svg{width:14px;height:14px;color:var(--cg);}
+.status-sel{width:100%;padding:9px 12px;border:1.5px solid var(--n200);border-radius:var(--radius);background:#fff;color:var(--n700);font-size:12.5px;font-family:var(--font);margin-bottom:10px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a3b5ac' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.status-sel:focus{outline:none;border-color:var(--cg);}
+.user-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-btn{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--n200);background:#fff;color:var(--n500);font-family:var(--font);transition:all 0.15s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--cg);background:var(--cg-pale);color:var(--cg-dark);}
+.search-input{padding:7px 13px;border-radius:var(--radius);border:1.5px solid var(--n200);font-size:12px;font-family:var(--font);background:#fff;color:var(--n800);outline:none;transition:border-color 0.2s;margin-left:auto;}
+.search-input:focus{border-color:var(--cg);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:var(--radius-xl);padding:28px;max-width:480px;width:100%;box-shadow:var(--shadow-lg);}
+.modal-title{font-size:16px;font-weight:800;color:var(--n800);margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--n400);margin-bottom:20px;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
+.empty-state{padding:40px;text-align:center;color:var(--n300);font-size:13px;}
+.empty-state svg{width:40px;height:40px;color:var(--n200);margin-bottom:12px;}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--n800);color:#fff;padding:12px 20px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;z-index:1000;transform:translateY(60px);opacity:0;transition:all 0.3s;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{background:var(--cg);}
+#toast.error{background:var(--red);}
+.new-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(139,92,246,0.12);color:#5b21b6;border:1px solid rgba(139,92,246,0.25);margin-left:6px;vertical-align:middle;}
+.new-row td{background:rgba(26,162,96,0.03)!important;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(26,162,96,0.25);border-radius:3px;}
+@media(max-width:1024px){
+  .topbar{padding:0 10px;}
+  .tb-brand{width:auto;padding:0;}
+  .tb-name,.tb-username{display:none;}
+  .btn-signout{padding:6px 10px;font-size:11px;}
+  .sidebar{position:sticky;top:var(--topbar-h);bottom:auto;width:100%;height:auto;border-right:none;border-bottom:1px solid rgba(26,162,96,0.14);overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:8px 10px;display:flex;align-items:center;gap:6px;z-index:150;}
+  .sb-user,.nav-sec{display:none;}
+  .nav-item{border-left:none;border:1px solid rgba(26,162,96,0.18);border-radius:999px;padding:8px 12px;min-height:36px;font-size:12px;color:#d5eadf;flex-shrink:0;}
+  .nav-item.active{border-left:none;border-color:var(--cg);}
+  .main{margin-left:0;margin-top:0;min-height:auto;padding:16px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .two-col,.two-col-wide{grid-template-columns:1fr;}
+  .card{padding:16px;}
+  .page-title{font-size:18px;}
+  .page-hdr{flex-direction:column;align-items:stretch;gap:8px;}
+  .search-input{width:100%;margin-left:0;}
+  #toast{left:12px;right:12px;bottom:12px;width:auto;}
+}
+@media(max-width:680px){
+  .role-pill{display:none;}
+  .tb-right{gap:6px;}
+  .tb-avatar{width:28px;height:28px;font-size:10px;}
+  .main{padding:12px;}
+  .stats-grid{grid-template-columns:1fr;}
+  .form-row,.frm2{grid-template-columns:1fr;gap:10px;}
+  .btn,.btn-main,.btn-sec{min-height:40px;}
+  .filter-bar{align-items:stretch;}
+  .filter-btn{min-height:34px;}
+  .bubble{max-width:92%;}
+  .modal{padding:18px;border-radius:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen" class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M2 16l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="auth-title">ConcernTrack</div>
+    <div class="auth-sub">Student Concern Management System</div>
+    <div class="auth-divider"></div>
+    <div class="err-box" id="login-error">✕ Invalid username or password. Please try again.</div>
+    <div class="fg">
+      <label class="fl">Username</label>
+      <input class="fi" id="login-id" placeholder="Enter your username" onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus()"/>
+    </div>
+    <div class="fg">
+      <label class="fl">Password</label>
+      <div class="pw-wrap">
+        <input class="fi" type="password" id="login-pw" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button class="pw-eye" onclick="togglePw('login-pw')" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="btn-main" onclick="doLogin()">Sign In</button>
+    <button class="btn-sec" onclick="goRegister()">Register</button>
+  </div>
+</div>
+
+<!-- ══ REGISTER ══ -->
+<div id="register-screen" class="auth-bg" style="display:none;align-items:flex-start;overflow-y:auto;padding:30px 20px;">
+  <div class="auth-card" style="width:480px;max-width:100%;margin:auto;">
+    <div class="auth-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M2 16l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="auth-title">Student Registration</div>
+    <div class="auth-sub">Create your ConcernTrack account</div>
+    <div class="auth-divider"></div>
+    <div class="err-box" id="reg-err"></div>
+    <div class="ok-box" id="reg-ok"></div>
+
+    <div style="font-size:10.5px;font-weight:700;color:var(--cg-dark);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px;">Personal Information</div>
+    <div class="frm2">
+      <div class="fg"><label class="fl">First Name *</label><input class="fi" id="r-fn" placeholder="Juan"/></div>
+      <div class="fg"><label class="fl">Last Name *</label><input class="fi" id="r-ln" placeholder="dela Cruz"/></div>
+    </div>
+    <div class="fg">
+      <label class="fl">Student ID Number *</label>
+      <input class="fi" id="r-sid" placeholder="e.g. 2025-00123"/>
+      <div class="field-hint">Format: YYYY-NNNNN</div>
+    </div>
+    <div class="fg"><label class="fl">Email Address *</label><input class="fi" id="r-email" type="email" placeholder="juan@school.edu.ph"/></div>
+    <div class="frm2">
+      <div class="fg">
+        <label class="fl">Course / Program *</label>
+        <select class="fi" id="r-course">
+          <option value="">Select course</option>
+          <option>BS Computer Science</option>
+          <option>BS Criminology</option>
+          <option>BSED</option>
+          <option>CBA</option>
+          <option>Electrical Engineering</option>
+          <option>Mechanical Engineering</option>
+          <option>COED</option>
+          <option>Hospital Management</option>
+          <option>Tourism Management</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Year Level *</label>
+        <select class="fi" id="r-year">
+          <option value="">Select year</option>
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+          <option>Graduate</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="auth-divider"></div>
+    <div style="font-size:10.5px;font-weight:700;color:var(--cg-dark);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px;">Account Password</div>
+    <div class="field-hint" style="margin-bottom:12px;font-size:11.5px;color:var(--cg-dark);background:var(--cg-pale);border-radius:var(--radius);padding:8px 12px;">Your <strong>Student ID</strong> will be used as your login username.</div>
+    <div class="frm2">
+      <div class="fg">
+        <label class="fl">Password *</label>
+        <div class="pw-wrap">
+          <input class="fi" type="password" id="r-pw" placeholder="Min. 6 characters"/>
+          <button class="pw-eye" onclick="togglePw('r-pw')" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Confirm Password *</label>
+        <div class="pw-wrap">
+          <input class="fi" type="password" id="r-pw2" placeholder="Re-enter password"/>
+          <button class="pw-eye" onclick="togglePw('r-pw2')" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <button class="btn-main" onclick="doRegister()">Create My Account</button>
+    <div class="auth-foot" style="margin-top:14px;">Already have an account? <a onclick="goLogin()">Sign in here →</a></div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M2 16l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="tb-name">ConcernTrack</span>
+    </div>
+    <span class="role-pill" id="role-pill">Student</span>
+    <div class="tb-right">
+      <span class="tb-username" id="tb-username"></span>
+      <div class="tb-avatar" id="tb-avatar"></div>
+      <button class="btn-signout" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main" id="main"></div>
+</div>
+
+<div id="toast"></div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+const ACCOUNTS = {
+  // 'maria.lim':    { password:'student456', role:'student',    name:'Maria Lim',       id:'2024-00456', ini:'ML', bg:'rgba(26,162,96,0.2)',   col:'#1AA260', isNew:false, course:'BS Criminology', year:'2nd Year', email:'maria@school.edu.ph' },
+  // 'pedro.cruz':   { password:'student789', role:'student',    name:'Pedro Cruz',      id:'2024-00789', ini:'PC', bg:'rgba(26,162,96,0.2)',   col:'#1AA260', isNew:false, course:'CBA', year:'4th Year', email:'pedro@school.edu.ph' },
+  'maria.santos': { password:'acctg123',   role:'accounting', name:'Maria Santos',    id:'ACC-001',    ini:'MS', bg:'rgba(37,99,235,0.2)',   col:'#3b82f6', isNew:false },
+  'jose.reyes':   { password:'reg123',     role:'registrar',  name:'Jose Reyes',      id:'REG-001',    ini:'JR', bg:'rgba(240,180,41,0.2)', col:'#d97706', isNew:false },
+  'ana.torres':   { password:'faculty123', role:'faculty',    name:'Dr. Ana Torres',  id:'FAC-001',    ini:'AT', bg:'rgba(236,72,153,0.2)', col:'#db2777', isNew:false },
+  'admin':        { password:'admin123',   role:'admin',      name:'Admin User',       id:'ADM-001',    ini:'AU', bg:'rgba(139,92,246,0.2)', col:'#7c3aed', isNew:false },
+};
+
+const STAFF_CANONICAL_BY_ID = {
+  'ACC-001': 'maria.santos',
+  'REG-001': 'jose.reyes',
+  'ADM-001': 'admin',
+  'FAC-001': 'ana.torres'
+};
+const STAFF_DEFAULT_PASSWORDS = {
+  'maria.santos': 'acctg123',
+  'jose.reyes': 'reg123',
+  'ana.torres': 'faculty123',
+  'admin': 'admin123'
+};
+
+function normalizeStaffAccountAliases(){
+  let changed=false;
+  Object.keys(ACCOUNTS).forEach((key)=>{
+    const acc=ACCOUNTS[key];
+    const canonical=STAFF_CANONICAL_BY_ID[String(acc?.id||'').toUpperCase()];
+    if(!canonical||key===canonical)return;
+
+    if(ACCOUNTS[canonical]){
+      const aliasPw=String(acc?.password||'');
+      const canonicalPw=String(ACCOUNTS[canonical]?.password||'');
+      const defaultPw=STAFF_DEFAULT_PASSWORDS[canonical]||'';
+      const useAliasPw=aliasPw&&(canonicalPw===defaultPw||!canonicalPw);
+      ACCOUNTS[canonical]={...ACCOUNTS[canonical],...acc,password:useAliasPw?aliasPw:canonicalPw};
+    }else{
+      ACCOUNTS[canonical]={...acc};
+    }
+
+    delete ACCOUNTS[key];
+    changed=true;
+  });
+  return changed;
+}
+
+/* Student info lookup by name → {course, year} */
+const STUDENT_INFO = {
+  'Juan dela Cruz':   { course:'BS Computer Science',    year:'2nd Year', email:'juan@school.edu.ph' },
+  'Maria Lim':        { course:'BS Criminology',         year:'1st Year', email:'maria@school.edu.ph' },
+  'Pedro Cruz':       { course:'BSED',                   year:'3rd Year', email:'pedro@school.edu.ph' },
+  'Ana Gomez':        { course:'CBA',                    year:'2nd Year', email:'ana@school.edu.ph' },
+  'Luis Santos':      { course:'Hospital Management',    year:'3rd Year', email:'luis@school.edu.ph' },
+  'Carla Bautista':   { course:'Tourism Management',     year:'2nd Year', email:'carla@school.edu.ph' },
+  'Ramon Dela Vega':  { course:'Electrical Engineering', year:'4th Year', email:'ramon@school.edu.ph' },
+};
+
+function getStudentInfo(name){ return STUDENT_INFO[name] || {}; }
+
+const NAVS = {
+  student:    [{id:'s-dash',label:'Dashboard',icon:'grid'},{id:'s-submit',label:'Submit Concern',icon:'plus'},{id:'s-tickets',label:'My Tickets',icon:'list'},{id:'s-notifs',label:'Notifications',icon:'bell'},{id:'s-profile',label:'My Profile',icon:'user'}],
+  accounting: [{id:'a-dash',label:'Dashboard',icon:'grid'},{id:'a-concerns',label:'Financial Concerns',icon:'dollar'},{id:'a-notifs',label:'Notifications',icon:'bell'},{id:'a-reports',label:'Reports',icon:'chart'},{id:'a-profile',label:'My Profile',icon:'user'}],
+  registrar:  [{id:'r-dash',label:'Dashboard',icon:'grid'},{id:'r-concerns',label:'Academic Concerns',icon:'file'},{id:'r-notifs',label:'Notifications',icon:'bell'},{id:'r-reports',label:'Reports',icon:'chart'},{id:'r-profile',label:'My Profile',icon:'user'}],
+  faculty:    [{id:'f-dash',label:'Dashboard',icon:'grid'},{id:'f-concerns',label:'Student Concerns',icon:'list'},{id:'f-profile',label:'My Profile',icon:'user'}],
+  admin:      [{id:'ad-dash',label:'Dashboard',icon:'grid'},{id:'ad-users',label:'User Management',icon:'users'},{id:'ad-tickets',label:'All Tickets',icon:'list'},{id:'ad-announce',label:'Announcements',icon:'bell'},{id:'ad-reports',label:'Analytics',icon:'chart'},{id:'ad-profile',label:'My Profile',icon:'user'}],
+};
+let TICKETS=[];
+let ANNOUNCEMENTS=[
+  {id:'ANN-001',title:'System maintenance schedule',body:'The system will be down on April 5, 2–4 AM.',date:'March 30, 2025',audience:'All Users',draft:false},
+  {id:'ANN-002',title:'Enrollment period now open',body:'Second semester enrollment is open until April 10.',date:'March 28, 2025',audience:'Students Only',draft:false},
+  {id:'ANN-003',title:'Final grade submission deadline',body:'Faculty must submit final grades by April 15.',date:'March 25, 2025',audience:'Staff Only',draft:false},
+];
+let USERS=[
+  {name:'Juan dela Cruz',id:'2025-00123',role:'Student',ini:'JD',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Active',isNew:false,email:'juan@school.edu.ph',course:'BS Computer Science',year:'2nd Year',uname:'2025-00123',joinDate:'Mar 28, 2025'},
+  {name:'Maria Lim',id:'2025-00124',role:'Student',ini:'ML',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Inactive',isNew:false,email:'maria@school.edu.ph',course:'BS Criminology',year:'1st Year',uname:'2025-00124',joinDate:'Mar 29, 2025'},
+  {name:'Pedro Cruz',id:'2025-00125',role:'Student',ini:'PC',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Active',isNew:false,email:'pedro@school.edu.ph',course:'BSED',year:'3rd Year',uname:'2025-00125',joinDate:'Mar 27, 2025'},
+  {name:'Ana Gomez',id:'2025-00126',role:'Student',ini:'AG',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Inactive',isNew:false,email:'ana@school.edu.ph',course:'CBA',year:'2nd Year',uname:'2025-00126',joinDate:'Mar 30, 2025'},
+  {name:'Luis Santos',id:'2025-00127',role:'Student',ini:'LS',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Active',isNew:false,email:'luis@school.edu.ph',course:'Hospital Management',year:'3rd Year',uname:'2025-00127',joinDate:'Mar 25, 2025'},
+  {name:'Carla Bautista',id:'2025-00128',role:'Student',ini:'CB',bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Inactive',isNew:false,email:'carla@school.edu.ph',course:'Tourism Management',year:'2nd Year',uname:'2025-00128',joinDate:'Mar 26, 2025'},
+  {name:'Maria Santos',id:'ACC-001',role:'Accounting',ini:'MS',bg:'rgba(37,99,235,0.15)',col:'#1d4ed8',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'maria.santos'},
+  {name:'Jose Reyes',id:'REG-001',role:'Registrar',ini:'JR',bg:'rgba(240,180,41,0.15)',col:'#92400e',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'jose.reyes'},
+  {name:'Dr. Ana Torres',id:'FAC-001',role:'Faculty',ini:'AT',bg:'rgba(236,72,153,0.15)',col:'#9d174d',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'ana.torres'},
+  {name:'Admin User',id:'ADM-001',role:'Admin',ini:'AU',bg:'rgba(139,92,246,0.15)',col:'#5b21b6',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'admin'},
+];
+
+let currentRole='student', currentUser=null, currentPageId='s-dash', activeFilter='All', searchQuery='';
+let profilePhotos={};
+
+/* ── INITIALIZATION ON PAGE LOAD ── */
+function initializeApp() {
+  // Load saved users from localStorage (including registered students)
+  const saved = localStorage.getItem('usersList');
+  if (saved) {
+    try {
+      const loaded = JSON.parse(saved);
+      if (Array.isArray(loaded)) {
+        USERS = loaded;
+      }
+    } catch (e) {
+      console.error('Failed to load users:', e);
+    }
+  }
+  
+  // Load saved accounts from localStorage (including registered student accounts)
+  const savedAccounts = localStorage.getItem('accountsList');
+  if (savedAccounts) {
+    try {
+      const loadedAccounts = JSON.parse(savedAccounts);
+      if (typeof loadedAccounts === 'object' && loadedAccounts !== null) {
+        Object.assign(ACCOUNTS, loadedAccounts);
+        if (normalizeStaffAccountAliases()) {
+          localStorage.setItem('accountsList', JSON.stringify(ACCOUNTS));
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load accounts:', e);
+    }
+  }
+
+  // Load saved tickets so concerns persist after refresh/sign-out.
+  const savedTickets = localStorage.getItem('ticketsList') || localStorage.getItem('ticketsListBackup');
+  if (savedTickets) {
+    try {
+      const loadedTickets = JSON.parse(savedTickets);
+      TICKETS = Array.isArray(loadedTickets) ? loadedTickets : [];
+    } catch (e) {
+      console.error('Failed to load tickets:', e);
+      TICKETS = [];
+    }
+  }
+  
+  // Ensure all default staff accounts are present
+  const staffAccounts = [
+    {name:'Maria Santos',id:'ACC-001',role:'Accounting',ini:'MS',bg:'rgba(37,99,235,0.15)',col:'#1d4ed8',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'maria.santos'},
+    {name:'Jose Reyes',id:'REG-001',role:'Registrar',ini:'JR',bg:'rgba(240,180,41,0.15)',col:'#92400e',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'jose.reyes'},
+    {name:'Dr. Ana Torres',id:'FAC-001',role:'Faculty',ini:'AT',bg:'rgba(236,72,153,0.15)',col:'#9d174d',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'ana.torres'},
+    {name:'Admin User',id:'ADM-001',role:'Admin',ini:'AU',bg:'rgba(139,92,246,0.15)',col:'#5b21b6',status:'Inactive',isNew:false,email:'',course:'',year:'',uname:'admin'}
+  ];
+  
+  let staffAdded = false;
+  for (const staff of staffAccounts) {
+    if (!USERS.find(u => u.id === staff.id)) {
+      USERS.push(staff); // Add at end, keep students at top
+      staffAdded = true;
+    }
+  }
+  
+  if (staffAdded) {
+    // Save updated USERS list to persist
+    try {
+      localStorage.setItem('usersList', JSON.stringify(USERS));
+    } catch (e) {
+      console.error('Failed to save users:', e);
+    }
+  }
+
+  // Restore previous session if present.
+  const storedUser = localStorage.getItem('currentUser');
+  const token = localStorage.getItem('authToken');
+  if (storedUser && token) {
+    try {
+      const parsed = JSON.parse(storedUser);
+      const loginKey = String(parsed?.username || parsed?.uname || parsed?.id || '').toLowerCase();
+      currentUser = ACCOUNTS[loginKey] || parsed;
+      currentRole = currentUser.role || 'student';
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app-screen').style.display='block';
+      document.getElementById('tb-username').textContent=currentUser.name;
+      updateTopbarAvatar();
+      document.getElementById('role-pill').textContent={student:'Student',accounting:'Accounting',registrar:'Registrar',faculty:'Faculty',admin:'Admin'}[currentRole]||'Student';
+      buildSidebar(); activeFilter='All'; searchQuery='';
+      showPage(NAVS[currentRole][0].id);
+    } catch (e) {
+      console.error('Failed to restore session:', e);
+    }
+  }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+/* ── ICONS ── */
+const IC={
+  grid:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  list:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>`,
+  bell:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>`,
+  dollar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
+  file:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  chart:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>`,
+  users:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20,6 9,17 4,12"/></svg>`,
+  arrow:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15,18 9,12 15,6"/></svg>`,
+  upload:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="16,16 12,12 8,16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>`,
+  paper:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>`,
+  send:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>`,
+  trash:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>`,
+  edit:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  info:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  user:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  camera:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  graduation:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+};
+
+/* ── HELPERS ── */
+function badge(s){const m={Pending:'badge-pending','In Progress':'badge-progress',Resolved:'badge-resolved',Rejected:'badge-rejected'};return`<span class="badge ${m[s]||'badge-pending'}">${s}</span>`;}
+
+/* Course abbreviation helper */
+function abbrevCourse(course){
+  if(!course)return'—';
+  const map={'BS Computer Science':'BS CS','BS Criminology':'BS Crim','BSED':'BSED','CBA':'CBA','Electrical Engineering':'BSEE','Mechanical Engineering':'BSME','COED':'COED','Hospital Management':'Hosp. Mgt','Tourism Management':'Tourism Mgt'};
+  return map[course]||course;
+}
+
+/* Renders a course+year pill for dept pages */
+function deptPill(studentName){
+  const info=getStudentInfo(studentName);
+  if(!info.course)return`<span style="color:var(--n300);font-size:11px;">—</span>`;
+  const short=abbrevCourse(info.course);
+  return`<div style="display:flex;flex-direction:column;gap:2px;">
+    <span style="font-size:11.5px;font-weight:700;color:var(--n700);">${short}</span>
+    <span style="font-size:10.5px;color:var(--n400);">${info.year||''}</span>
+  </div>`;
+}
+
+function toast(msg,type='success'){const t=document.getElementById('toast');t.textContent=(type==='success'?'✓ ':type==='error'?'✕ ':'')+msg;t.className='show '+(type==='success'?'success':type==='error'?'error':'');setTimeout(()=>t.className='',2800);}
+function showToast(m,t){toast(m,t);}
+function openModal(title,sub,body,footer){document.getElementById('modal-title').textContent=title;document.getElementById('modal-sub').textContent=sub||'';document.getElementById('modal-body').innerHTML=body||'';document.getElementById('modal-footer').innerHTML=footer||`<button class="btn" onclick="closeModalNow()">Close</button>`;document.getElementById('modal').classList.add('open');}
+function closeModal(e){if(e.target===document.getElementById('modal'))closeModalNow();}
+function closeModalNow(){document.getElementById('modal').classList.remove('open');}
+function togglePw(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';}
+
+function saveTickets(){
+  try{
+    const serialized=JSON.stringify(Array.isArray(TICKETS)?TICKETS:[]);
+    localStorage.setItem('ticketsList',serialized);
+    localStorage.setItem('ticketsListBackup',serialized);
+  }catch(e){
+    console.error('Failed to save tickets:',e);
+  }
+}
+
+function isCurrentStudentTicket(t){
+  if(!t||!currentUser)return false;
+  const currentId=String(currentUser.id||'').trim();
+  const ownerId=String(t.studentId||'').trim();
+  if(currentId&&ownerId&&currentId===ownerId)return true;
+  return String(t.student||'').trim().toLowerCase()===String(currentUser.name||'').trim().toLowerCase();
+}
+
+function getCurrentStudentTickets(){
+  return TICKETS.filter(t=>isCurrentStudentTicket(t));
+}
+
+/* ── TABLE BUILDERS ── */
+/* showStu = show Student column; showDept = show Course/Year column (for dept staff pages) */
+function tbl(tickets, showStu=true, showDeptInfo=false){
+  if(!tickets.length)return`<div class="empty-state">${IC.list}<p>No tickets found</p></div>`;
+  return`<div class="tbl-wrap"><table class="tbl"><thead><tr>
+    <th>Ticket #</th>
+    ${showStu?'<th>Student</th>':''}
+    ${showDeptInfo?'<th>Course & Year</th>':''}
+    <th>Category</th>
+    <th>Subject</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th></th>
+  </tr></thead><tbody>
+  ${tickets.map(t=>{
+    const info=getStudentInfo(t.student);
+    return`<tr>
+      <td><span style="font-weight:800;color:var(--cg-dark);font-size:12px;">${t.id}</span></td>
+      ${showStu?`<td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--cg-pale);color:var(--cg-dark);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;">${t.student.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+          <span style="font-weight:600;">${t.student}</span>
+        </div>
+      </td>`:''}
+      ${showDeptInfo?`<td>${deptPill(t.student)}</td>`:''}
+      <td style="color:var(--n500);">${t.category}</td>
+      <td style="max-width:170px;"><span style="font-weight:500;">${t.subject}</span></td>
+      <td>${badge(t.status)}</td>
+      <td style="color:var(--n300);font-size:11px;">${t.date.slice(5)}</td>
+      <td><button class="btn btn-sm btn-primary" onclick="openTicket('${t.id}')">Open</button></td>
+    </tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+
+function filterTbl(all, showStu, showDeptInfo=false){
+  let f=all;
+  if(activeFilter!=='All')f=f.filter(t=>t.status===activeFilter);
+  if(searchQuery)f=f.filter(t=>(t.subject+t.student+t.category+t.id).toLowerCase().includes(searchQuery.toLowerCase()));
+  return tbl(f,showStu,showDeptInfo);
+}
+
+function buildFilterBar(pid,showStu,showDeptInfo=false){
+  return`<div class="filter-bar">${['All','Pending','In Progress','Resolved','Rejected'].map(s=>`<button class="filter-btn${activeFilter===s?' active':''}" onclick="setFilter('${s}','${pid}',${showStu},${showDeptInfo})">${s}</button>`).join('')}<input class="search-input" placeholder="Search…" oninput="setSearch(this.value,'${pid}',${showStu},${showDeptInfo})"/></div>`;
+}
+
+function setFilter(f,pid,sh,sd){activeFilter=f;searchQuery='';showPage(pid);}
+
+function setSearch(q,pid,sh,sd){
+  searchQuery=q;
+  const el=document.getElementById('tbl-container');if(!el)return;
+  const dept=pid==='a-concerns'?'Accounting':pid==='r-concerns'?'Registrar':pid==='f-concerns'?'Faculty':null;
+  let data=dept?TICKETS.filter(t=>t.dept===dept):pid==='ad-tickets'?TICKETS:getCurrentStudentTickets();
+  if(activeFilter!=='All')data=data.filter(t=>t.status===activeFilter);
+  if(q)data=data.filter(t=>(t.subject+t.student+t.category+t.id).toLowerCase().includes(q.toLowerCase()));
+  el.innerHTML=tbl(data,sh!==false&&sh!=='false',sd===true||sd==='true');
+}
+
+/* ── SCREEN NAVIGATION ── */
+function goRegister(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('register-screen').style.display='flex';
+  document.getElementById('reg-err').style.display='none';
+  document.getElementById('reg-ok').style.display='none';
+}
+function goLogin(){
+  document.getElementById('register-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-error').style.display='none';
+}
+
+/* ── REGISTER ── */
+function doRegister(){
+  const fn=document.getElementById('r-fn').value.trim();
+  const ln=document.getElementById('r-ln').value.trim();
+  const sid=document.getElementById('r-sid').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const course=document.getElementById('r-course').value;
+  const year=document.getElementById('r-year').value;
+  const pw=document.getElementById('r-pw').value;
+  const pw2=document.getElementById('r-pw2').value;
+  const errEl=document.getElementById('reg-err');
+  const okEl=document.getElementById('reg-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(!fn||!ln||!sid||!email||!course||!year||!pw||!pw2){errEl.textContent='✕ Please fill in all required fields.';errEl.style.display='block';return;}
+  if(pw.length<6){errEl.textContent='✕ Password must be at least 6 characters.';errEl.style.display='block';return;}
+  if(pw!==pw2){errEl.textContent='✕ Passwords do not match. Please try again.';errEl.style.display='block';return;}
+  const loginKey=sid.toLowerCase();
+  if(ACCOUNTS[loginKey]){errEl.textContent='✕ Student ID "'+sid+'" is already registered.';errEl.style.display='block';return;}
+  const fullName=fn+' '+ln;
+  const ini=(fn[0]+(ln[0]||'')).toUpperCase();
+  ACCOUNTS[loginKey]={password:pw,role:'student',name:fullName,id:sid,ini,bg:'rgba(26,162,96,0.2)',col:'#1AA260',isNew:true,course,year,email};
+  STUDENT_INFO[fullName]={course,year,email};
+  USERS.unshift({name:fullName,id:sid,role:'Student',ini,bg:'rgba(26,162,96,0.15)',col:'#15803d',status:'Inactive',isNew:true,email,course,year,uname:loginKey,joinDate:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  // Save registered student to localStorage
+  try {
+    localStorage.setItem('usersList', JSON.stringify(USERS));
+    localStorage.setItem('accountsList', JSON.stringify(ACCOUNTS));
+  } catch (e) {
+    console.error('Failed to save student registration:', e);
+  }
+  ['r-fn','r-ln','r-sid','r-email','r-pw','r-pw2'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('r-course').value='';document.getElementById('r-year').value='';
+  okEl.textContent='✓ Account created! Welcome, '+fullName+'. Your Student ID is your username. Redirecting…';
+  okEl.style.display='block';
+  setTimeout(()=>{goLogin();document.getElementById('login-id').value=loginKey;},2200);
+}
+
+/* ── AVATAR HELPER ── */
+function updateTopbarAvatar(){
+  const av=document.getElementById('tb-avatar');
+  const photo=profilePhotos[currentUser.id];
+  if(photo){
+    av.innerHTML='';av.style.background='none';av.style.backgroundImage='url('+photo+')';av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';
+  } else {
+    av.style.backgroundImage='none';av.style.background=currentUser.bg;av.style.color=currentUser.col;av.textContent=currentUser.ini;
+  }
+}
+
+/* ── LOGIN ── */
+function doLogin(){
+  const uname=document.getElementById('login-id').value.trim().toLowerCase();
+  const pw=document.getElementById('login-pw').value;
+  const errEl=document.getElementById('login-error');
+  const acc=ACCOUNTS[uname];
+  if(!acc||acc.password!==pw){errEl.style.display='block';document.getElementById('login-pw').value='';return;}
+  errEl.style.display='none';
+  currentRole=acc.role; currentUser=acc;
+  // Mark user as Active in USERS list when they successfully log in
+  const userInUsersList=USERS.find(u=>u.id===currentUser.id);
+  if(userInUsersList&&userInUsersList.status!=='Active'){
+    userInUsersList.status='Active';
+    try {
+      localStorage.setItem('usersList', JSON.stringify(USERS));
+    } catch (e) {
+      console.error('Failed to save user status:', e);
+    }
+  }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  try{
+    localStorage.setItem('currentUser',JSON.stringify(currentUser));
+    localStorage.setItem('authToken','local-session');
+  }catch(e){
+    console.error('Failed to persist session:',e);
+  }
+  document.getElementById('tb-username').textContent=acc.name;
+  updateTopbarAvatar();
+  document.getElementById('role-pill').textContent={student:'Student',accounting:'Accounting',registrar:'Registrar',faculty:'Faculty',admin:'Admin'}[acc.role];
+  buildSidebar(); activeFilter='All'; searchQuery='';
+  showPage(NAVS[currentRole][0].id);
+}
+function doLogout(){
+  try{
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+  }catch(e){
+    console.error('Failed to clear session:',e);
+  }
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('register-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-id').value=''; document.getElementById('login-pw').value='';
+  document.getElementById('login-error').style.display='none';
+}
+
+/* ── SIDEBAR ── */
+function buildSidebar(){
+  const u=currentUser;
+  const sbPhoto=profilePhotos[u.id];
+  const sbAv=sbPhoto
+    ? `<div style="width:38px;height:38px;border-radius:50%;background-image:url(${sbPhoto});background-size:cover;background-position:center;flex-shrink:0;border:2px solid rgba(26,162,96,0.4);"></div>`
+    : `<div style="width:38px;height:38px;border-radius:50%;background:${u.bg};color:${u.col};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">${u.ini}</div>`;
+  let h=`<div class="sb-user"><div style="display:flex;align-items:center;gap:10px;">${sbAv}<div><div class="sb-user-name">${u.name}</div><div class="sb-user-id">${u.id}</div></div></div></div><div class="nav-sec">Navigation</div>`;
+  NAVS[currentRole].forEach(n=>{h+=`<div class="nav-item" id="nav-${n.id}" onclick="showPage('${n.id}')">${IC[n.icon]||''}${n.label}</div>`;});
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+/* ── ROUTING ── */
+function showPage(id){
+  currentPageId=id; activeFilter='All'; searchQuery='';
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  const el=document.getElementById('nav-'+id);if(el)el.classList.add('active');
+  const map={
+    's-dash':renderStudentDash,'s-submit':renderSubmitForm,'s-tickets':renderMyTickets,'s-notifs':renderNotifs,
+    'a-dash':renderAccDash,'a-concerns':renderAccConcerns,'a-notifs':()=>renderDeptNotifs('Accounting'),'a-reports':()=>renderReports('Accounting'),
+    'r-dash':renderRegDash,'r-concerns':renderRegConcerns,'r-notifs':()=>renderDeptNotifs('Registrar'),'r-reports':()=>renderReports('Registrar'),
+    'f-dash':renderFacDash,'f-concerns':renderFacConcerns,
+    'ad-dash':renderAdminDash,'ad-users':renderAdminUsers,'ad-tickets':renderAdminTickets,
+    'ad-announce':renderAnnouncements,'ad-reports':renderAdminReports,'ad-profile':renderProfile,
+    's-profile':renderProfile,'a-profile':renderProfile,'r-profile':renderProfile,'f-profile':renderProfile,
+  };
+  document.getElementById('main').innerHTML=(map[id]||(() =>''))();
+}
+
+/* ── STUDENT PAGES ── */
+function renderStudentDash(){
+  const my=getCurrentStudentTickets();
+  const [p,ip,r]=[my.filter(t=>t.status==='Pending').length,my.filter(t=>t.status==='In Progress').length,my.filter(t=>t.status==='Resolved').length];
+  const visibleAnnouncements=ANNOUNCEMENTS.filter(a=>{
+    if(!a||a.draft)return false;
+    const audience=String(a.audience||'All Users');
+    return audience==='All Users'||audience==='Students Only';
+  });
+  return`<div>
+  <div class="page-hdr"><div><div class="page-title">My Dashboard</div><div class="page-sub">Welcome back, ${currentUser.name}!</div></div><button class="btn btn-primary" onclick="showPage('s-submit')">${IC.plus} New Concern</button></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.list}</div><div class="stat-label">Total Concerns</div><div class="stat-val">${my.length}</div><div class="stat-sub">This semester</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:#f59e0b;"></div><div class="stat-icon" style="background:#fffbeb;color:#f59e0b;">${IC.bell}</div><div class="stat-label">Pending</div><div class="stat-val" style="color:#92600a;">${p}</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--blue);"></div><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue);">${IC.chart}</div><div class="stat-label">In Progress</div><div class="stat-val" style="color:var(--blue);">${ip}</div></div>
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.check}</div><div class="stat-label">Resolved</div><div class="stat-val" style="color:var(--cg-dark);">${r}</div></div>
+  </div>
+  <div class="two-col">
+    <div><div class="card"><div class="card-hdr"><div class="card-title">Recent Tickets</div><button class="btn btn-sm" onclick="showPage('s-tickets')">View all</button></div>${my.length?tbl(my.slice(0,3),false,false):`<div class="empty-state">${IC.list}<p>No tickets yet. <a onclick="showPage('s-submit')" style="color:var(--cg-dark);cursor:pointer;font-weight:600;">Submit your first concern</a></p></div>`}</div></div>
+    <div><div class="card"><div class="card-title">Announcements</div>${visibleAnnouncements.length?visibleAnnouncements.map(a=>`<div class="ann-item"><div class="ann-dot"></div><div><div class="ann-title">${a.title}</div><div class="ann-body">${a.body}</div><div class="ann-date">${a.date}</div></div></div>`).join(''):`<div style="color:var(--n400);font-size:12px;padding:12px 0;">No announcements for students.</div>`}</div></div>
+  </div></div>`;
+}
+function renderSubmitForm(){
+  return`<div>
+  <div class="page-hdr"><div><div class="page-title">Submit a Concern</div><div class="page-sub">A ticket number will be automatically assigned</div></div></div>
+  <div style="max-width:640px;"><div class="card">
+    <div class="alert-info">${IC.info} Our team responds within 1–3 business days.</div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Department *</label><select class="fi" id="dept-sel" onchange="updateCats()"><option value="">Select department</option><option>Accounting</option><option>Registrar</option><option>Faculty</option></select></div>
+      <div class="fg"><label class="fl">Concern Category *</label><select class="fi" id="cat-sel"><option value="">Select department first</option></select></div>
+    </div>
+    <div class="fg"><label class="fl">Subject *</label><input class="fi" id="subj-inp" placeholder="Brief description of your concern"/></div>
+    <div class="fg"><label class="fl">Details *</label><textarea class="fi" id="detail-inp" rows="5" placeholder="Explain your concern in detail…"></textarea></div>
+    <div class="fg"><label class="fl">Supporting Documents</label>
+      <div class="upload-zone" onclick="toast('Demo: File browser would open here')">
+        <div class="upload-zone-icon">${IC.upload}</div><p>Click to upload or drag and drop</p><span>PNG, JPG, PDF up to 10MB</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-primary" onclick="submitConcern()">Submit Concern</button><button class="btn" onclick="showPage('s-dash')">Cancel</button></div>
+  </div></div></div>`;
+}
+function renderMyTickets(){
+  const my=getCurrentStudentTickets();
+  return`<div><div class="page-hdr"><div><div class="page-title">My Tickets</div><div class="page-sub">${my.length} concern(s) submitted</div></div></div>
+  <div class="card">${buildFilterBar('s-tickets',false,false)}<div id="tbl-container">${filterTbl(my,false,false)}</div></div></div>`;
+}
+function renderNotifs(){
+  const notifs=[{title:'TKT-001 updated to In Progress',body:'Your payment concern is now being reviewed.',time:'2 hours ago',read:false},{title:'New reply on TKT-006',body:'Dr. Torres responded to your attendance concern.',time:'1 day ago',read:false},{title:'TKT-003 has been resolved',body:'Your TOR request has been processed.',time:'3 days ago',read:true}];
+  return`<div><div class="page-hdr"><div><div class="page-title">Notifications</div><div class="page-sub">${notifs.filter(n=>!n.read).length} unread</div></div><button class="btn btn-sm" onclick="toast('All marked as read')">Mark all read</button></div>
+  <div class="card">${notifs.map(n=>`<div class="notif-item"><div class="notif-dot ${n.read?'read':'unread'}"></div><div style="flex:1;"><div class="notif-title" style="${!n.read?'color:var(--cg-dark);':''}">${n.title}</div><div class="notif-body">${n.body}</div><div class="notif-time">${n.time}</div></div></div>`).join('')}</div></div>`;
+}
+
+function renderDeptNotifs(dept){
+  const items=ANNOUNCEMENTS
+    .filter(a=>a && !a.draft)
+    .filter(a=>{
+      const audience=String(a.audience||'All Users');
+      return audience==='All Users' || audience==='Staff Only';
+    })
+    .slice()
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  return`<div><div class="page-hdr"><div><div class="page-title">${dept} Notifications</div><div class="page-sub">${items.length} announcement${items.length===1?'':'s'}</div></div></div>
+  <div class="card">${items.length===0?`<div class="empty-state">${IC.bell}<p>No notifications yet</p></div>`:items.map(n=>`<div class="notif-item"><div class="notif-dot unread"></div><div style="flex:1;"><div class="notif-title">${n.title||'Announcement'}</div><div class="notif-body">${n.body||''}</div><div class="notif-time">${n.date||''}</div></div></div>`).join('')}</div></div>`;
+}
+
+/* ── TICKET DETAIL ── */
+function openTicket(id){
+  const t=TICKETS.find(x=>x.id===id);if(!t)return;
+  const isStaff=currentRole!=='student', isRes=t.status==='Resolved';
+  const sInfo=getStudentInfo(t.student);
+  document.getElementById('main').innerHTML=`<div>
+  <button class="back-btn" onclick="showPage('${currentPageId}')">${IC.arrow} Back to list</button>
+  <div class="page-hdr"><div><div class="page-title">${t.subject}</div><div class="page-sub" style="display:flex;align-items:center;gap:8px;margin-top:4px;"><span style="font-weight:700;color:var(--cg-dark);">${t.id}</span><span style="color:var(--n300);">·</span><span>${t.dept}</span><span style="color:var(--n300);">·</span><span>${t.category}</span></div></div><div style="display:flex;align-items:center;gap:8px;">${badge(t.status)}</div></div>
+  <div class="two-col">
+    <div>
+      <div class="card"><div class="card-title">Conversation Thread</div><div class="thread" id="thread-body">${renderThread(t)}</div></div>
+      ${!isRes?`<div class="card"><div class="card-title">Send a Reply</div><textarea class="fi" id="reply-txt" rows="3" style="margin-bottom:10px;" placeholder="Type your message…"></textarea><div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="sendReply('${t.id}')">${IC.send} Send Reply</button><button class="btn" onclick="toast('Demo: File upload')">Attach File</button></div></div>`:''}
+      ${isRes&&currentRole==='student'?`<div class="card"><div class="card-title">Rate this Service</div><div class="stars" id="stars-row">${[1,2,3,4,5].map(i=>`<span class="star" data-v="${i}" onclick="rateStar(${i})">★</span>`).join('')}</div><div style="font-size:11px;color:var(--n300);margin-top:8px;" id="rate-lbl">Click a star to rate</div><textarea class="fi" rows="2" style="margin:12px 0;" placeholder="Optional comment…"></textarea><button class="btn btn-primary btn-sm" onclick="toast('Thank you for your feedback!')">Submit Rating</button></div>`:''}
+    </div>
+    <div>
+      <div class="card"><div class="card-title">Ticket Information</div><table class="info-tbl">${[
+        ['Ticket #',`<span style="font-weight:800;color:var(--cg-dark);">${t.id}</span>`],
+        ['Status',badge(t.status)],
+        ['Department',t.dept],
+        ['Category',t.category],
+        ['Submitted by',t.student],
+        ...(isStaff&&sInfo.course?[['Course',sInfo.course],['Year Level',sInfo.year||'—']]:isStaff?[['Course','—']]:[] ),
+        ['Date Filed',t.date]
+      ].map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('')}</table></div>
+      ${isStaff?`<div class="card"><div class="card-title">Update Status</div><select class="status-sel" id="status-upd">${['Pending','In Progress','Resolved','Rejected'].map(s=>`<option${s===t.status?' selected':''}>${s}</option>`).join('')}</select><textarea class="fi" rows="2" style="margin-bottom:10px;" id="status-note" placeholder="Staff note (optional)…"></textarea><button class="btn btn-primary" style="width:100%;" onclick="updateTicketStatus('${t.id}')">Update Status</button></div>`:''}
+      <div class="card"><div class="card-title">Attachments</div><div class="attach-item"><div class="attach-icon">${IC.paper}</div><span>receipt_payment.jpg</span></div><div class="attach-item"><div class="attach-icon">${IC.paper}</div><span>screenshot_portal.png</span></div>${isStaff?`<div style="margin-top:10px;"><button class="btn btn-sm" style="width:100%;" onclick="toast('Demo: Upload file')">Upload Response File</button></div>`:''}</div>
+    </div>
+  </div></div>`;
+}
+function renderThread(t){
+  const sti=t.student.split(' ').map(n=>n[0]).join('').slice(0,2);
+  let h=`<div class="msg-row"><div class="msg-av" style="background:var(--cg-pale);color:var(--cg-dark);">${sti}</div><div><div style="font-size:10.5px;color:var(--n300);margin-bottom:4px;font-weight:600;">${t.student} · ${t.date}</div><div class="bubble bubble-student">${t.details}</div></div></div>`;
+  t.replies.forEach(r=>{
+    if(r.from==='staff')h+=`<div class="msg-row staff"><div class="msg-av" style="background:var(--cg);color:#fff;">ST</div><div><div style="font-size:10.5px;color:var(--n300);margin-bottom:4px;font-weight:600;text-align:right;">${t.dept} Staff · ${r.date}</div><div class="bubble bubble-staff">${r.text}</div></div></div>`;
+    else h+=`<div class="msg-row"><div class="msg-av" style="background:var(--cg-pale);color:var(--cg-dark);">${sti}</div><div><div style="font-size:10.5px;color:var(--n300);margin-bottom:4px;font-weight:600;">${t.student} · ${r.date}</div><div class="bubble bubble-student">${r.text}</div></div></div>`;
+  });
+  return h;
+}
+function sendReply(id){const txt=document.getElementById('reply-txt')?.value?.trim();if(!txt){toast('Please type a message','error');return;}const t=TICKETS.find(x=>x.id===id);if(!t)return;t.replies.push({from:currentRole==='student'?'student':'staff',text:txt,date:new Date().toISOString().slice(0,10)});saveTickets();document.getElementById('thread-body').innerHTML=renderThread(t);document.getElementById('reply-txt').value='';toast('Reply sent!');}
+function updateTicketStatus(id){const t=TICKETS.find(x=>x.id===id);if(!t)return;t.status=document.getElementById('status-upd').value;const note=document.getElementById('status-note').value.trim();if(note)t.replies.push({from:'staff',text:note,date:new Date().toISOString().slice(0,10)});saveTickets();toast(`Status updated to "${t.status}"`);openTicket(id);}
+function rateStar(v){const L=['','Poor','Fair','Good','Very Good','Excellent'];document.querySelectorAll('.star').forEach(s=>s.classList.toggle('lit',+s.dataset.v<=v));const l=document.getElementById('rate-lbl');if(l)l.textContent=`${L[v]} — ${v}/5 stars`;}
+
+/* ── DEPT PAGES ── */
+function renderAccDash(){return deptDash('Accounting Dashboard','Manage financial concerns — '+TICKETS.filter(t=>t.dept==='Accounting'&&t.status==='Pending').length+' pending',TICKETS.filter(t=>t.dept==='Accounting'),'a-notifs');}
+function renderRegDash(){return deptDash('Registrar Dashboard','Manage academic record concerns — '+TICKETS.filter(t=>t.dept==='Registrar'&&t.status==='Pending').length+' pending',TICKETS.filter(t=>t.dept==='Registrar'),'r-notifs');}
+function renderFacDash(){return deptDash('Faculty Dashboard','Manage student academic concerns — '+TICKETS.filter(t=>t.dept==='Faculty'&&t.status==='Pending').length+' pending',TICKETS.filter(t=>t.dept==='Faculty'));}
+function deptDash(title,sub,tickets,notifsPageId=''){
+  const [p,ip,r]=[tickets.filter(t=>t.status==='Pending').length,tickets.filter(t=>t.status==='In Progress').length,tickets.filter(t=>t.status==='Resolved').length];
+  const notifBtn=notifsPageId?`<button class="btn btn-sm" onclick="showPage('${notifsPageId}')">${IC.bell} Notifications</button>`:'';
+  return`<div><div class="page-hdr"><div><div class="page-title">${title}</div><div class="page-sub">${sub}</div></div><div>${notifBtn}</div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.list}</div><div class="stat-label">Total Tickets</div><div class="stat-val">${tickets.length}</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:#f59e0b;"></div><div class="stat-icon" style="background:#fffbeb;color:#f59e0b;">${IC.bell}</div><div class="stat-label">Pending</div><div class="stat-val" style="color:#92600a;">${p}</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--blue);"></div><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue);">${IC.chart}</div><div class="stat-label">In Progress</div><div class="stat-val" style="color:var(--blue);">${ip}</div></div>
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.check}</div><div class="stat-label">Resolved</div><div class="stat-val" style="color:var(--cg-dark);">${r}</div></div>
+  </div>
+  <div class="card"><div class="card-hdr"><div class="card-title">All Tickets <span style="font-size:11px;color:var(--n400);font-weight:400;margin-left:4px;">(${tickets.length} total)</span></div></div>
+  ${tickets.length===0?`<div class="empty-state">${IC.list}<p>No tickets yet</p></div>`:tbl(tickets,true,true)}</div></div>`;
+}
+
+/* ── DEPT CONCERN PAGES (with Course & Year column) ── */
+function renderAccConcerns(){
+  const my=TICKETS.filter(t=>t.dept==='Accounting');
+  const newCount=my.filter(t=>t.status==='Pending').length;
+  return`<div><div class="page-hdr"><div><div class="page-title">Financial Concerns</div><div class="page-sub">${my.length} total · <span style="color:#92600a;font-weight:700;">${newCount} pending</span></div></div></div>
+  <div style="margin-bottom:12px;">${['Tuition payment','Balance inquiries','Refund requests','Payment verification'].map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);">
+      <span style="color:var(--cg-dark);">${IC.graduation}</span>
+      <span style="font-size:12px;color:var(--cg-dark);font-weight:600;">Student course and year level are shown in the <strong>Course & Year</strong> column below.</span>
+    </div>
+    ${buildFilterBar('a-concerns',true,true)}<div id="tbl-container">${filterTbl(my,true,true)}</div>
+  </div></div>`;
+}
+function renderRegConcerns(){
+  const my=TICKETS.filter(t=>t.dept==='Registrar');
+  const newCount=my.filter(t=>t.status==='Pending').length;
+  return`<div><div class="page-hdr"><div><div class="page-title">Academic Concerns</div><div class="page-sub">${my.length} total · <span style="color:#92600a;font-weight:700;">${newCount} pending</span></div></div></div>
+  <div style="margin-bottom:12px;">${['Enrollment issues','TOR requests','Certificate requests','Grade concerns'].map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);">
+      <span style="color:var(--cg-dark);">${IC.graduation}</span>
+      <span style="font-size:12px;color:var(--cg-dark);font-weight:600;">Student course and year level are shown in the <strong>Course & Year</strong> column below.</span>
+    </div>
+    ${buildFilterBar('r-concerns',true,true)}<div id="tbl-container">${filterTbl(my,true,true)}</div>
+  </div></div>`;
+}
+function renderFacConcerns(){
+  const my=TICKETS.filter(t=>t.dept==='Faculty');
+  const newCount=my.filter(t=>t.status==='Pending').length;
+  return`<div><div class="page-hdr"><div><div class="page-title">Student Concerns</div><div class="page-sub">${my.length} total · <span style="color:#92600a;font-weight:700;">${newCount} pending</span></div></div></div>
+  <div style="margin-bottom:12px;">${['Grade clarification','Attendance issues','Assignment concerns'].map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);">
+      <span style="color:var(--cg-dark);">${IC.graduation}</span>
+      <span style="font-size:12px;color:var(--cg-dark);font-weight:600;">Student course and year level are shown in the <strong>Course & Year</strong> column below.</span>
+    </div>
+    ${buildFilterBar('f-concerns',true,true)}<div id="tbl-container">${filterTbl(my,true,true)}</div>
+  </div></div>`;
+}
+
+function renderReports(dept){
+  const bars=[['Enrollment Issues',0],['TOR Requests',0],['Grade Concerns',0],['Certificate Requests',0]];
+  return`<div><div class="page-hdr"><div><div class="page-title">${dept} Reports</div><div class="page-sub">Performance overview</div></div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.list}</div><div class="stat-label">Total This Month</div><div class="stat-val">0</div></div>
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.check}</div><div class="stat-label">Resolved</div><div class="stat-val" style="color:var(--cg-dark);">0</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--blue);"></div><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue);">${IC.chart}</div><div class="stat-label">Avg Resolution</div><div class="stat-val">0d</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--gold);"></div><div class="stat-icon" style="background:var(--gold-bg);color:var(--gold);">${IC.bell}</div><div class="stat-label">Satisfaction</div><div class="stat-val">0%</div></div>
+  </div>
+  <div class="two-col-wide">
+    <div class="card"><div class="card-title">Volume by category</div>${bars.map(([l,v])=>`<div class="rep-row"><div class="rep-label">${l}</div><div style="flex:1;"><div class="prog-bar"><div class="prog-fill" style="width:0%;"></div></div></div><div class="rep-count">0</div></div>`).join('')}</div>
+    <div class="card"><div class="card-title">Status breakdown</div>${[['Pending',0,'badge-pending'],['In Progress',0,'badge-progress'],['Resolved',0,'badge-resolved'],['Rejected',0,'badge-rejected']].map(([s,v,c])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--n100);"><span class="badge ${c}">${s}</span><span style="font-size:22px;font-weight:800;color:var(--n700);">0</span></div>`).join('')}</div>
+  </div></div>`;
+}
+
+/* ── ADMIN PAGES ── */
+function renderAdminDash(){
+  const newCount=USERS.filter(u=>u.isNew).length;
+  return`<div><div class="page-hdr"><div><div class="page-title">Admin Dashboard</div><div class="page-sub">System-wide overview</div></div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.list}</div><div class="stat-label">Total Tickets</div><div class="stat-val">${TICKETS.length}</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--blue);"></div><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue);">${IC.users}</div><div class="stat-label">Registered Users</div><div class="stat-val">${USERS.length}</div>${newCount?`<div class="stat-sub" style="color:var(--cg-dark);font-weight:700;">+${newCount} new via portal</div>`:'<div class="stat-sub">Total accounts</div>'}</div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:#f59e0b;"></div><div class="stat-icon" style="background:#fffbeb;color:#f59e0b;">${IC.bell}</div><div class="stat-label">Pending</div><div class="stat-val" style="color:#92600a;">${TICKETS.filter(t=>t.status==='Pending').length}</div></div>
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.check}</div><div class="stat-label">Resolved</div><div class="stat-val" style="color:var(--cg-dark);">${TICKETS.filter(t=>t.status==='Resolved').length}</div></div>
+  </div>
+  <div class="two-col-wide">
+    <div class="card"><div class="card-title">Department Load</div>${[['Accounting',TICKETS.filter(t=>t.dept==='Accounting').length,'var(--cg)'],['Registrar',TICKETS.filter(t=>t.dept==='Registrar').length,'var(--blue)'],['Faculty',TICKETS.filter(t=>t.dept==='Faculty').length,'var(--gold)']].map(([d,n,c])=>`<div class="rep-row"><div class="rep-label">${d}</div><div style="flex:1;"><div class="prog-bar"><div class="prog-fill" style="width:${Math.min(n*25,100)}%;background:${c};"></div></div></div><div class="rep-count">${n}</div></div>`).join('')}</div>
+    <div class="card"><div class="card-title">Recent Activity</div>
+      ${newCount?`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--n100);font-size:12px;"><span style="color:var(--cg-dark);font-weight:600;">🎉 ${newCount} new student registration${newCount>1?'s':''} via portal</span><a onclick="showPage('ad-users')" style="color:var(--cg-dark);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;margin-left:8px;">View →</a></div>`:''}
+      ${[['TKT-001 updated to In Progress','2h ago'],['TKT-008 submitted','5h ago'],['TKT-005 resolved by Accounting','1d ago'],['TKT-003 resolved by Registrar','5d ago']].map(([a,t])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--n100);font-size:12px;"><span style="color:var(--n600);">${a}</span><span style="color:var(--n300);margin-left:8px;white-space:nowrap;">${t}</span></div>`).join('')}
+    </div>
+  </div></div>`;
+}
+
+function renderAdminUsers(){
+  const newCount=USERS.filter(u=>u.isNew).length;
+  return`<div>
+  <div class="page-hdr">
+    <div><div class="page-title">User Management</div><div class="page-sub">Total ${USERS.length} users${newCount?` &nbsp;·&nbsp; <span style="color:var(--cg-dark);font-weight:700;">${newCount} new portal registration${newCount>1?'s':''}</span>`:''}</div></div>
+    <button class="btn btn-primary" onclick="openAddUserModal()">${IC.plus} Add User</button>
+  </div>
+  ${newCount?`<div style="background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;"><div style="width:36px;height:36px;background:var(--cg);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:15px;">👋</div><div><div style="font-size:13px;font-weight:700;color:var(--cg-dark);">${newCount} new student${newCount>1?' accounts have':' account has'} registered through the portal</div><div style="font-size:11.5px;color:var(--n500);margin-top:2px;">These accounts are highlighted below with a <span class="new-badge">NEW</span> badge.</div></div></div>`:''}
+  <div class="card">
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Student / User</th><th>ID</th><th>Role</th><th>Course & Year</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+    ${USERS.map((u,i)=>`<tr${u.isNew?' class="new-row"':''}>
+      <td><div style="display:flex;align-items:center;gap:10px;"><div class="user-av" style="background:${u.bg};color:${u.col};">${u.ini}</div><div><div style="font-weight:600;font-size:12.5px;">${u.name}${u.isNew?`<span class="new-badge">NEW</span>`:''}</div>${u.joinDate?`<div style="font-size:10.5px;color:var(--n300);">Joined ${u.joinDate}</div>`:''}</div></div></td>
+      <td style="color:var(--n400);font-size:11.5px;font-weight:600;">${u.id}</td>
+      <td><span class="chip">${u.role}</span></td>
+      <td style="font-size:11.5px;color:var(--n500);">${u.course?`${abbrevCourse(u.course)}<br/><span style="color:var(--n300);">${u.year}</span>`:'—'}</td>
+      <td style="font-size:11.5px;color:var(--n400);">${u.email||'—'}</td>
+      <td>${u.status==='Active'?`<span class="badge badge-resolved">Active</span>`:`<span class="badge badge-rejected">Inactive</span>`}</td>
+      <td><div style="display:flex;gap:5px;"><button class="btn btn-xs" onclick="openEditUserModal(${i})">${IC.edit} Edit</button><button class="btn btn-xs btn-danger" onclick="toggleUserStatus(${i})">${u.status==='Active'?'Deactivate':'Activate'}</button></div></td>
+    </tr>`).join('')}
+    </tbody></table></div>
+  </div></div>`;
+}
+function openAddUserModal(){openModal('Add New User','Fill in the details to create a new account',`<div class="fg"><label class="fl">Full Name</label><input class="fi" id="nu-name" placeholder="Full name"/></div><div class="fg"><label class="fl">ID / Student No.</label><input class="fi" id="nu-id" placeholder="User ID"/></div><div class="fg"><label class="fl">Role</label><select class="fi" id="nu-role"><option>Student</option><option>Accounting</option><option>Registrar</option><option>Faculty</option><option>Admin</option></select></div>`,`<button class="btn" onclick="closeModalNow()">Cancel</button><button class="btn btn-primary" onclick="addUser()">Add User</button>`);}
+function addUser(){const name=document.getElementById('nu-name')?.value?.trim(),id=document.getElementById('nu-id')?.value?.trim(),role=document.getElementById('nu-role')?.value;if(!name||!id){toast('Please fill in all fields','error');return;}const cm={Student:'rgba(26,162,96,0.15)',Accounting:'rgba(37,99,235,0.15)',Registrar:'rgba(240,180,41,0.15)',Faculty:'rgba(236,72,153,0.15)',Admin:'rgba(139,92,246,0.15)'},ct={Student:'#15803d',Accounting:'#1d4ed8',Registrar:'#92400e',Faculty:'#9d174d',Admin:'#5b21b6'};USERS.push({name,id,role,ini:name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),bg:cm[role]||cm.Student,col:ct[role]||ct.Student,status:'Active',isNew:false,email:'',course:'',year:''});try{localStorage.setItem('usersList',JSON.stringify(USERS));}catch(e){console.error('Failed to save users:',e);}closeModalNow();toast(`"${name}" added!`);showPage('ad-users');}
+function openEditUserModal(i){const u=USERS[i];openModal('Edit User',`Editing: ${u.name}`,`<div class="fg"><label class="fl">Full Name</label><input class="fi" id="eu-name" value="${u.name}"/></div><div class="fg"><label class="fl">ID</label><input class="fi" id="eu-id" value="${u.id}"/></div><div class="fg"><label class="fl">Role</label><select class="fi" id="eu-role">${['Student','Accounting','Registrar','Faculty','Admin'].map(r=>`<option${r===u.role?' selected':''}>${r}</option>`).join('')}</select></div>`,`<button class="btn" onclick="closeModalNow()">Cancel</button><button class="btn btn-primary" onclick="saveUser(${i})">Save Changes</button>`);}
+function saveUser(i){USERS[i].name=document.getElementById('eu-name')?.value?.trim()||USERS[i].name;USERS[i].id=document.getElementById('eu-id')?.value?.trim()||USERS[i].id;USERS[i].role=document.getElementById('eu-role')?.value||USERS[i].role;USERS[i].ini=USERS[i].name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();try{localStorage.setItem('usersList',JSON.stringify(USERS));}catch(e){console.error('Failed to save users:',e);}closeModalNow();toast('User updated!');showPage('ad-users');}
+function toggleUserStatus(i){USERS[i].status=USERS[i].status==='Active'?'Inactive':'Active';try{localStorage.setItem('usersList',JSON.stringify(USERS));}catch(e){console.error('Failed to save users:',e);}toast(`"${USERS[i].name}" ${USERS[i].status==='Active'?'activated':'deactivated'}`);showPage('ad-users');}
+
+function renderAdminTickets(){return`<div><div class="page-hdr"><div><div class="page-title">All Tickets</div><div class="page-sub">Across all departments</div></div></div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--cg-pale);border:1px solid var(--cg-pale2);border-radius:var(--radius);">
+      <span style="color:var(--cg-dark);">${IC.graduation}</span>
+      <span style="font-size:12px;color:var(--cg-dark);font-weight:600;">Each ticket now shows the student's <strong>Course & Year</strong> for quick reference.</span>
+    </div>
+    ${buildFilterBar('ad-tickets',true,true)}<div id="tbl-container">${filterTbl(TICKETS,true,true)}</div>
+  </div></div>`;}
+
+function renderAnnouncements(){
+  return`<div><div class="page-hdr"><div><div class="page-title">Announcements</div></div></div>
+  <div class="two-col">
+    <div><div class="card"><div class="card-title">Post New Announcement</div>
+      <div class="fg"><label class="fl">Title *</label><input class="fi" id="ann-title" placeholder="Announcement title"/></div>
+      <div class="fg"><label class="fl">Audience</label><select class="fi" id="ann-aud"><option>All Users</option><option>Students Only</option><option>Staff Only</option></select></div>
+      <div class="fg"><label class="fl">Message *</label><textarea class="fi" id="ann-body" rows="4" placeholder="Write your announcement…"></textarea></div>
+      <div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="publishAnn(false)">Publish</button><button class="btn" onclick="publishAnn(true)">Save Draft</button></div>
+    </div></div>
+    <div><div class="card"><div class="card-hdr"><div class="card-title">Published (${ANNOUNCEMENTS.filter(a=>!a.draft).length})</div></div><div id="ann-list">${renderAnnList()}</div></div></div>
+  </div></div>`;
+}
+function renderAnnList(){return ANNOUNCEMENTS.filter(a=>!a.draft).map((a,i)=>`<div class="ann-item"><div class="ann-dot"></div><div style="flex:1;"><div class="ann-title">${a.title}</div><div class="ann-body">${a.body}</div><div class="ann-date">${a.date} · ${a.audience}</div></div><button class="btn btn-xs btn-danger" style="flex-shrink:0;" onclick="deleteAnn(${i})">${IC.trash}</button></div>`).join('')||'<div style="color:var(--n300);font-size:12px;padding:12px 0;">No announcements yet</div>';}
+function publishAnn(isDraft){const title=document.getElementById('ann-title')?.value?.trim(),body=document.getElementById('ann-body')?.value?.trim(),aud=document.getElementById('ann-aud')?.value;if(!title||!body){toast('Please fill in title and message','error');return;}ANNOUNCEMENTS.unshift({id:'ANN-'+String(ANNOUNCEMENTS.length+1).padStart(3,'0'),title,body,date:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),audience:aud,draft:isDraft});toast(isDraft?'Draft saved!':'Announcement published!');document.getElementById('ann-title').value='';document.getElementById('ann-body').value='';const al=document.getElementById('ann-list');if(al)al.innerHTML=renderAnnList();}
+function deleteAnn(i){ANNOUNCEMENTS.splice(i,1);toast('Deleted');const al=document.getElementById('ann-list');if(al)al.innerHTML=renderAnnList();}
+
+function renderAdminReports(){
+  const total=0, res=0;
+  return`<div><div class="page-hdr"><div><div class="page-title">Analytics & Reports</div></div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.list}</div><div class="stat-label">Total Tickets</div><div class="stat-val">0</div></div>
+    <div class="stat-card"><div class="stat-top-bar"></div><div class="stat-icon" style="background:var(--cg-pale);color:var(--cg);">${IC.check}</div><div class="stat-label">Resolved</div><div class="stat-val" style="color:var(--cg-dark);">0</div><div class="stat-sub">0% rate</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--blue);"></div><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue);">${IC.chart}</div><div class="stat-label">Avg Resolution</div><div class="stat-val">0d</div></div>
+    <div class="stat-card"><div class="stat-top-bar" style="background:var(--gold);"></div><div class="stat-icon" style="background:var(--gold-bg);color:var(--gold);">${IC.bell}</div><div class="stat-label">Satisfaction</div><div class="stat-val">0%</div></div>
+  </div>
+  <div class="two-col-wide">
+    <div class="card"><div class="card-title">By department</div>${['Accounting','Registrar','Faculty'].map(d=>`<div class="rep-row"><div class="rep-label">${d}</div><div style="flex:1;"><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--cg);"></div></div></div><div class="rep-count">0</div></div>`).join('')}</div>
+    <div class="card"><div class="card-title">Monthly trend</div>${['January','February','March','April (so far)'].map(m=>`<div class="rep-row"><div class="rep-label">${m}</div><div style="flex:1;"><div class="prog-bar"><div class="prog-fill" style="width:0%;"></div></div></div><div class="rep-count">0</div></div>`).join('')}</div>
+  </div>
+  <div class="card"><div class="card-hdr"><div class="card-title">All tickets</div><span style="font-size:12px;color:var(--n400);">0 records</span></div>${tbl([],true,true)}</div></div>`;
+}
+
+/* ── PROFILE PAGE ── */
+function renderProfile(){
+  const u=currentUser;
+  const photo=profilePhotos[u.id];
+  const roleLabels={student:'Student',accounting:'Accounting Staff',registrar:'Registrar Staff',faculty:'Faculty',admin:'System Administrator'};
+  const roleColors={student:'var(--cg)',accounting:'var(--blue)',registrar:'#d97706',faculty:'#db2777',admin:'#7c3aed'};
+  const my=currentRole==='student'?TICKETS.filter(t=>t.student===u.name):[];
+  return`<div>
+  <div class="page-hdr"><div><div class="page-title">My Profile</div><div class="page-sub">Manage your personal information and photo</div></div></div>
+  <div class="two-col">
+    <div>
+      <div class="card" style="text-align:center;padding:32px 24px;">
+        <div style="position:relative;display:inline-block;margin-bottom:20px;">
+          <div id="prof-avatar" style="width:110px;height:110px;border-radius:50%;margin:0 auto;border:3px solid ${photo?'var(--cg)':'var(--border)'};overflow:hidden;background:${u.bg};display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:${u.col};background-size:cover;background-position:center;${photo?'background-image:url('+photo+');background-color:transparent;':''}">
+            ${photo?'':'<span>'+u.ini+'</span>'}
+          </div>
+          <label id="photo-upload-label" style="position:absolute;bottom:2px;right:2px;width:32px;height:32px;background:var(--cg);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10;" title="Change photo" onclick="document.getElementById('photo-upload').click();">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </label>
+          <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)"/>
+        </div>
+        <div style="font-size:20px;font-weight:800;color:var(--n800);letter-spacing:-0.3px;">${u.name}</div>
+        <div style="margin-top:6px;"><span style="display:inline-block;padding:3px 14px;border-radius:20px;font-size:11px;font-weight:700;background:${roleColors[currentRole]}22;color:${roleColors[currentRole]};border:1px solid ${roleColors[currentRole]}44;">${roleLabels[currentRole]||currentRole}</span></div>
+        <div style="font-size:12px;color:var(--n400);margin-top:8px;">${u.id}</div>
+        ${photo?`<button class="btn btn-xs" style="margin-top:14px;color:var(--red);border-color:#fecaca;" onclick="removePhoto()">Remove Photo</button>`:''}
+      </div>
+      <div class="card">
+        <div class="card-title">Edit Information</div>
+        <div class="fg"><label class="fl">Full Name</label><input class="fi" id="prof-name" value="${u.name}"/></div>
+        <div class="fg"><label class="fl">Email Address</label><input class="fi" id="prof-email" type="email" value="${u.email||''}" placeholder="your@email.com"/></div>
+        ${currentRole==='student'?`
+        <div class="form-row">
+          <div class="fg"><label class="fl">Course / Program</label>
+            <select class="fi" id="prof-course">
+              ${['BS Computer Science','BS Criminology','BSED','CBA','Electrical Engineering','Mechanical Engineering','COED','Hospital Management','Tourism Management'].map(c=>`<option${((u.course||'')===c)?' selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Year Level</label>
+            <select class="fi" id="prof-year">
+              ${['1st Year','2nd Year','3rd Year','4th Year','Graduate'].map(y=>`<option${u.year===y?' selected':''}>${y}</option>`).join('')}
+            </select>
+          </div>
+        </div>`:''}
+        <div class="fg"><label class="fl">New Password <span style="font-weight:400;color:var(--n300);">(leave blank to keep current)</span></label>
+          <div class="pw-wrap"><input class="fi" type="password" id="prof-pw" placeholder="Enter new password"/><button class="pw-eye" onclick="togglePw('prof-pw')" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Account Details</div>
+        <table class="info-tbl">
+          <tr><td>ID / Employee No.</td><td style="font-weight:700;color:var(--cg-dark);">${u.id}</td></tr>
+          <tr><td>Role</td><td>${roleLabels[currentRole]||currentRole}</td></tr>
+          <tr><td>Status</td><td><span class="badge badge-resolved">Active</span></td></tr>
+          ${u.course?`<tr><td>Course</td><td>${u.course}</td></tr>`:''}
+          ${u.year?`<tr><td>Year Level</td><td>${u.year}</td></tr>`:''}
+          ${u.email?`<tr><td>Email</td><td>${u.email}</td></tr>`:''}
+          ${u.joinDate?`<tr><td>Joined</td><td>${u.joinDate}</td></tr>`:''}
+        </table>
+      </div>
+      ${currentRole==='student'?`
+      <div class="card">
+        <div class="card-title">My Activity</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${[['Total Concerns',my.length,'var(--cg)'],['Pending',my.filter(t=>t.status==='Pending').length,'#f59e0b'],['In Progress',my.filter(t=>t.status==='In Progress').length,'var(--blue)'],['Resolved',my.filter(t=>t.status==='Resolved').length,'var(--cg)']].map(([l,v,c])=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--n50);border-radius:var(--radius);border:1px solid var(--n100);">
+            <span style="font-size:12.5px;color:var(--n600);">${l}</span>
+            <span style="font-size:18px;font-weight:800;color:${c};">${v}</span>
+          </div>`).join('')}
+        </div>
+      </div>`:''}
+      <div class="card" style="background:var(--cg-pale);border-color:var(--cg-pale2);">
+        <div class="card-title" style="color:var(--cg-dark);">Photo Guidelines</div>
+        <div style="font-size:12px;color:var(--cg-dark);line-height:1.8;">
+          • Use a clear, recent photo of your face<br/>
+          • JPG, PNG or GIF — max 5MB<br/>
+          • Square photos work best<br/>
+          • Photo appears on your profile and in the topbar
+        </div>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function handlePhotoUpload(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  if(file.size>5*1024*1024){toast('Image must be under 5MB','error');return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const data=e.target.result;
+    profilePhotos[currentUser.id]=data;
+    const av=document.getElementById('prof-avatar');
+    if(av){av.style.backgroundImage='url('+data+')';av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.style.backgroundColor='transparent';av.innerHTML='';}
+    updateTopbarAvatar();
+    buildSidebar();
+    toast('Profile photo updated!');
+    setTimeout(()=>showPage(currentPageId),300);
+  };
+  reader.readAsDataURL(file);
+}
+function removePhoto(){
+  delete profilePhotos[currentUser.id];
+  updateTopbarAvatar();
+  buildSidebar();
+  toast('Photo removed');
+  showPage(currentPageId);
+}
+function saveProfile(){
+  const name=document.getElementById('prof-name')?.value?.trim();
+  const email=document.getElementById('prof-email')?.value?.trim();
+  const pw=document.getElementById('prof-pw')?.value;
+  if(!name){toast('Name cannot be empty','error');return;}
+  const oldName=currentUser.name;
+  currentUser.name=name;
+  currentUser.email=email||'';
+  if(document.getElementById('prof-course'))currentUser.course=document.getElementById('prof-course').value;
+  if(document.getElementById('prof-year'))currentUser.year=document.getElementById('prof-year').value;
+  if(pw){if(pw.length<6){toast('Password must be at least 6 characters','error');return;}currentUser.password=pw;}
+  // Update STUDENT_INFO lookup
+  if(currentRole==='student'){
+    delete STUDENT_INFO[oldName];
+    STUDENT_INFO[name]={course:currentUser.course||'',year:currentUser.year||'',email:email||''};
+  }
+  const canonicalByRole={accounting:'maria.santos',registrar:'jose.reyes',admin:'admin'};
+  const canonicalKey=canonicalByRole[String(currentRole||'').toLowerCase()]||'';
+  const providedKey=String(currentUser.username||currentUser.uname||'').toLowerCase();
+  const idMatchedKeys=Object.keys(ACCOUNTS).filter(k=>String(ACCOUNTS[k]?.id||'')===String(currentUser.id||''));
+  const relatedKeys=Array.from(new Set([canonicalKey,providedKey,...idMatchedKeys].filter(Boolean)));
+  relatedKeys.forEach((key)=>{
+    if(!ACCOUNTS[key]) return;
+    ACCOUNTS[key]={...ACCOUNTS[key],...currentUser,password:pw?pw:ACCOUNTS[key].password};
+  });
+  if(canonicalKey){
+    currentUser.uname=canonicalKey;
+    currentUser.username=canonicalKey;
+  }
+  const ui=USERS.findIndex(u=>u.id===currentUser.id);
+  if(ui>=0){USERS[ui].name=name;USERS[ui].email=email||'';if(currentUser.course)USERS[ui].course=currentUser.course;if(currentUser.year)USERS[ui].year=currentUser.year;}
+  try{localStorage.setItem('accountsList',JSON.stringify(ACCOUNTS));}catch(e){console.error('Failed to save accounts:',e);}
+  try{localStorage.setItem('usersList',JSON.stringify(USERS));}catch(e){console.error('Failed to save users:',e);}
+  document.getElementById('tb-username').textContent=name;
+  toast('Profile saved successfully!');
+  showPage(currentPageId);
+}
+
+/* ── FORM HANDLERS ── */
+function updateCats(){
+  const dept=document.getElementById('dept-sel')?.value;
+  const cats={Accounting:['Tuition payment issue','Balance inquiry','Refund request','Payment verification'],Registrar:['Enrollment issue','Subject registration','TOR request','Certificate request','Grade concern'],Faculty:['Grade clarification','Attendance issue','Assignment concern']};
+  const sel=document.getElementById('cat-sel');if(!sel)return;
+  if(!cats[dept]){sel.innerHTML='<option value="">Select department first</option>';return;}
+  sel.innerHTML=cats[dept].map(c=>`<option>${c}</option>`).join('');
+}
+function submitConcern(){
+  const dept=document.getElementById('dept-sel')?.value,subj=document.getElementById('subj-inp')?.value?.trim(),detail=document.getElementById('detail-inp')?.value?.trim(),cat=document.getElementById('cat-sel')?.value;
+  if(!dept){toast('Please select a department','error');return;}
+  if(!subj){toast('Please enter a subject','error');return;}
+  if(!detail){toast('Please provide details','error');return;}
+  const existingIds=new Set((Array.isArray(TICKETS)?TICKETS:[]).map(t=>String(t?.id||'').trim()));
+  let deletedIds=[];
+  try{const raw=localStorage.getItem('deletedConcernIds');const parsed=raw?JSON.parse(raw):[];deletedIds=Array.isArray(parsed)?parsed:[];}catch(e){deletedIds=[];}
+  const deletedSet=new Set(deletedIds.map(id=>String(id||'').trim()));
+  let nextNum=901;
+  (Array.isArray(TICKETS)?TICKETS:[]).forEach(t=>{const m=String(t?.id||'').trim().match(/^TKT-(\d+)$/i);if(!m)return;const n=Number(m[1]);if(!Number.isNaN(n)&&n>=nextNum)nextNum=n+1;});
+  let tid=`TKT-${String(nextNum).padStart(3,'0')}`;
+  while(existingIds.has(tid)||deletedSet.has(tid)){nextNum+=1;tid=`TKT-${String(nextNum).padStart(3,'0')}`;}
+  TICKETS.unshift({id:tid,student:currentUser.name,studentId:currentUser.student_id||currentUser.id||'',dept,category:cat||dept,subject:subj,details:detail,status:'Pending',date:new Date().toISOString().slice(0,10),replies:[]});
+  saveTickets();
+  // Also make sure STUDENT_INFO has this student
+  if(!STUDENT_INFO[currentUser.name]&&currentUser.course){
+    STUDENT_INFO[currentUser.name]={course:currentUser.course,year:currentUser.year||'',email:currentUser.email||''};
+  }
+  document.getElementById('main').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:60vh;">
+  <div class="card" style="max-width:480px;text-align:center;padding:48px 36px;width:100%;">
+    <div class="success-icon"><span style="color:var(--cg);width:30px;height:30px;display:flex;">${IC.check}</span></div>
+    <div style="font-size:22px;font-weight:800;color:var(--n800);margin-bottom:8px;">Concern Submitted!</div>
+    <div style="font-size:13px;color:var(--n400);margin-bottom:28px;line-height:1.6;">Your concern has been received. Our team will review it within 1–3 business days.</div>
+    <div class="tkt-num-box"><div style="font-size:10px;color:rgba(200,230,215,0.6);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">Your Ticket Number</div><div style="font-size:36px;font-weight:900;color:#fff;letter-spacing:4px;">${tid}</div><div style="font-size:11px;color:rgba(200,230,215,0.5);margin-top:6px;">Save this to track your concern</div></div>
+    <div style="display:flex;gap:10px;justify-content:center;"><button class="btn btn-primary" onclick="showPage('s-tickets')">View My Tickets</button><button class="btn" onclick="showPage('s-submit')">Submit Another</button></div>
+  </div></div>`;
+}
+</script>
+</body>
+</html>
