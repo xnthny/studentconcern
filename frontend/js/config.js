@@ -1,3 +1,5 @@
+const API_URL = "https://studentconcern-backend.onrender.com";
+
 // Global application configuration and data
 let ACCOUNTS = {
   'maria.santos': { password: 'acctg123', role: 'accounting', name: 'Maria Santos', id: 'ACC-001', ini: 'MS', bg: 'rgba(37,99,235,0.2)', col: '#3b82f6', isNew: false },
